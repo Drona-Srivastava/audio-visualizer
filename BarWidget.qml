@@ -20,7 +20,6 @@ BarWidget {
     property string marqueeText: ""
     property string mediaText: ""
     property string sourceText: ""
-    property int widgetWidth: 144
     readonly property string effectiveMode: mode === "cava" && cavaAvailable ? "cava" : "title"
     readonly property color ink: Color.foreground
     readonly property color seal: Color.accent
@@ -89,9 +88,9 @@ BarWidget {
         if (root.bar) root.bar.run("omarchy-shell shell toggle audio-visualizer")
     }
 
-    // Reserve one stable slot so mode changes and the play button never push
-    // into the neighboring bar widget.
-    implicitWidth: root.widgetWidth
+    // The play button is part of the row's measured width, so it cannot
+    // protrude into the neighboring bar widget.
+    implicitWidth: contentRow.implicitWidth + Style.space(8)
     implicitHeight: Style.bar.sizeHorizontal
 
     Component.onCompleted: root.resetLevels()
@@ -151,10 +150,13 @@ BarWidget {
         id: contentRow
         anchors.centerIn: parent
         spacing: Style.space(6)
+        layoutDirection: Qt.RightToLeft
 
         Item {
             id: displayArea
-            width: root.widgetWidth - Style.bar.iconSlot - Style.space(6)
+            width: root.effectiveMode === "cava"
+                ? 72
+                : Math.max(48, Math.min(112, titleText.implicitWidth + Style.space(10)))
             height: Style.bar.sizeHorizontal
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -240,13 +242,11 @@ BarWidget {
         radius: Style.space(6)
         anchors.verticalCenter: parent.verticalCenter
         visible: root.active
+        opacity: root.active ? 1 : 0
         color: playMouse.containsMouse
             ? Qt.rgba(root.seal.r, root.seal.g, root.seal.b, 0.18)
             : "transparent"
-        border.color: playMouse.containsMouse
-            ? root.seal
-            : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.18)
-        border.width: 1
+        border.width: 0
 
         Text {
             anchors.centerIn: parent
@@ -261,7 +261,8 @@ BarWidget {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying()
+            enabled: root.active && root.player !== null
+            onClicked: if (root.player) root.player.togglePlaying()
         }
     }
 

@@ -147,23 +147,21 @@ PanelWindow {
 
                 Rectangle {
                     width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
-                    color: root.player && root.player.canGoPrevious ? root.pill : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.04)
-                    opacity: root.player && root.player.canGoPrevious ? 1 : 0.45
+                    color: root.pill
                     Text { anchors.centerIn: parent; text: "‹"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; enabled: root.player && root.player.canGoPrevious; onClicked: root.player.previous() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.previous() }
                 }
                 Rectangle {
                     width: 64; height: 34; radius: Math.max(8, Style.cornerRadius)
                     color: root.seal
                     Text { anchors.centerIn: parent; text: root.playing ? "Ⅱ" : "▶"; color: root.bg; font.family: Style.font.family; font.pixelSize: Style.font.icon }
-                    MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.togglePlaying() }
                 }
                 Rectangle {
                     width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
-                    color: root.player && root.player.canGoNext ? root.pill : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.04)
-                    opacity: root.player && root.player.canGoNext ? 1 : 0.45
+                    color: root.pill
                     Text { anchors.centerIn: parent; text: "›"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; enabled: root.player && root.player.canGoNext; onClicked: root.player.next() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.next() }
                 }
             }
 
