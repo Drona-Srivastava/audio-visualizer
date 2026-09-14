@@ -94,8 +94,8 @@ BarWidget {
         if (root.bar) root.bar.run("omarchy-shell shell toggle audio-visualizer")
     }
 
-    implicitWidth: Math.max(38, contentRow.implicitWidth + 14)
-    implicitHeight: 28
+    implicitWidth: Math.max(38, contentRow.implicitWidth + Style.space(8))
+    implicitHeight: Style.bar.sizeHorizontal
 
     Component.onCompleted: root.resetLevels()
     onPlayerChanged: root.updateMediaText()
@@ -150,36 +150,23 @@ BarWidget {
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: root.pillRadius
-        color: root.pill
-        border.color: root.pillBorder
-        border.width: root.pillBorderW
-    }
-
     Row {
         id: contentRow
         anchors.centerIn: parent
-        spacing: 6
+        spacing: Style.space(6)
 
-        Image {
-            id: art
-            width: 20
-            height: 20
+        Item {
+            id: displayArea
+            width: root.effectiveMode === "cava" ? 82 : (root.effectiveMode === "title" ? 130 : 18)
+            height: Style.bar.sizeHorizontal
             anchors.verticalCenter: parent.verticalCenter
-            source: root.player ? (root.player.trackArtUrl || "") : ""
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            visible: status === Image.Ready
-            layer.enabled: visible
-        }
+            clip: true
 
         Rectangle {
             id: spectrum
-            width: root.effectiveMode === "cava" ? 82 : 0
+            width: parent.width
             height: 19
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.centerIn: parent
             color: "transparent"
             clip: true
             visible: root.effectiveMode === "cava"
@@ -202,8 +189,7 @@ BarWidget {
 
         Item {
             id: titleClip
-            width: root.effectiveMode === "title" ? 130 : 0
-            height: 24
+            anchors.fill: parent
             visible: root.effectiveMode === "title"
             clip: true
 
@@ -231,21 +217,55 @@ BarWidget {
 
         Text {
             id: idleIcon
+            anchors.centerIn: parent
             visible: !root.active
             text: "♫"
-            font.pixelSize: 15
-            font.family: "sans-serif"
-            color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.5)
+            font.pixelSize: Style.font.icon
+            font.family: Style.font.family
+            color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.55)
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            cursorShape: Qt.PointingHandCursor
+            onClicked: function(mouse) {
+                if (mouse.button === Qt.RightButton) root.cycleMode()
+                else root.openPopup()
+            }
+        }
         }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        cursorShape: Qt.PointingHandCursor
-        onClicked: function(mouse) {
-            if (mouse.button === Qt.RightButton) root.cycleMode()
-            else root.openPopup()
+    Rectangle {
+        id: playButton
+        width: Style.bar.iconSlot
+        height: Style.bar.iconSlot
+        radius: Style.space(6)
+        anchors.verticalCenter: parent.verticalCenter
+        visible: root.active
+        color: playMouse.containsMouse
+            ? Qt.rgba(root.seal.r, root.seal.g, root.seal.b, 0.18)
+            : "transparent"
+        border.color: playMouse.containsMouse
+            ? root.seal
+            : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.18)
+        border.width: 1
+
+        Text {
+            anchors.centerIn: parent
+            text: root.playing ? "Ⅱ" : "▶"
+            color: root.seal
+            font.family: Style.font.family
+            font.pixelSize: Style.font.iconSmall
+        }
+
+        MouseArea {
+            id: playMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying()
         }
     }
 }

@@ -61,8 +61,8 @@ PanelWindow {
         height: content.implicitHeight + 34
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: 42
-        radius: 14
+        anchors.topMargin: Style.bar.sizeHorizontal + Style.space(8)
+        radius: Math.max(12, Style.cornerRadius)
         color: root.bg
         border.color: root.pillBorder
         border.width: root.pillBorderW
@@ -72,17 +72,17 @@ PanelWindow {
         Column {
             id: content
             anchors.fill: parent
-            anchors.margins: 17
-            spacing: 12
+            anchors.margins: Style.space(16)
+            spacing: Style.space(12)
 
             Row {
                 width: parent.width
-                spacing: 12
+                spacing: Style.space(12)
 
                 Rectangle {
-                    width: 76
-                    height: 76
-                    radius: 8
+                    width: 72
+                    height: 72
+                    radius: Math.max(8, Style.cornerRadius)
                     color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.08)
                     clip: true
 
@@ -104,16 +104,16 @@ PanelWindow {
                 }
 
                 Column {
-                    width: parent.width - 88
+                    width: parent.width - 84
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 4
+                    spacing: Style.space(4)
 
                     Text {
                         width: parent.width
                         text: root.player ? (root.player.trackTitle || "Unknown title") : "No media playing"
                         color: root.ink
-                        font.family: root.mono
-                        font.pixelSize: 14
+                        font.family: Style.font.menuFamily
+                        font.pixelSize: Style.font.title
                         font.bold: true
                         elide: Text.ElideRight
                     }
@@ -121,8 +121,8 @@ PanelWindow {
                         width: parent.width
                         text: root.player ? (root.player.trackArtist || root.player.trackAlbum || "") : ""
                         color: root.sumiHi
-                        font.family: root.mono
-                        font.pixelSize: 11
+                        font.family: Style.font.menuFamily
+                        font.pixelSize: Style.font.bodySmall
                         elide: Text.ElideRight
                         visible: text !== ""
                     }
@@ -130,8 +130,8 @@ PanelWindow {
                         width: parent.width
                         text: root.player ? root.playerName() : ""
                         color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.5)
-                        font.family: root.mono
-                        font.pixelSize: 10
+                        font.family: Style.font.menuFamily
+                        font.pixelSize: Style.font.caption
                         elide: Text.ElideRight
                         visible: text !== ""
                     }
@@ -140,25 +140,27 @@ PanelWindow {
 
             Row {
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: 10
+                spacing: Style.space(10)
 
                 Rectangle {
-                    width: 42; height: 32; radius: 8
-                    color: root.pill
+                    width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
+                    color: root.player && root.player.canGoPrevious ? root.pill : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.04)
+                    opacity: root.player && root.player.canGoPrevious ? 1 : 0.45
                     Text { anchors.centerIn: parent; text: "‹"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canGoPrevious) root.player.previous() }
+                    MouseArea { anchors.fill: parent; enabled: root.player && root.player.canGoPrevious; onClicked: root.player.previous() }
                 }
                 Rectangle {
-                    width: 60; height: 32; radius: 8
+                    width: 64; height: 34; radius: Math.max(8, Style.cornerRadius)
                     color: root.seal
-                    Text { anchors.centerIn: parent; text: root.playing ? "Ⅱ" : "▶"; color: root.bg; font.pixelSize: 16 }
+                    Text { anchors.centerIn: parent; text: root.playing ? "Ⅱ" : "▶"; color: root.bg; font.family: Style.font.family; font.pixelSize: Style.font.icon }
                     MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying() }
                 }
                 Rectangle {
-                    width: 42; height: 32; radius: 8
-                    color: root.pill
+                    width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
+                    color: root.player && root.player.canGoNext ? root.pill : Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.04)
+                    opacity: root.player && root.player.canGoNext ? 1 : 0.45
                     Text { anchors.centerIn: parent; text: "›"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canGoNext) root.player.next() }
+                    MouseArea { anchors.fill: parent; enabled: root.player && root.player.canGoNext; onClicked: root.player.next() }
                 }
             }
 
@@ -166,8 +168,8 @@ PanelWindow {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Right-click the bar widget to switch between Cava and title scroll"
                 color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.55)
-                font.family: root.mono
-                font.pixelSize: 9
+                font.family: Style.font.menuFamily
+                font.pixelSize: Style.font.caption
             }
         }
     }
