@@ -194,13 +194,6 @@ PanelWindow {
                 }
             }
 
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "Right-click the bar widget to switch between Cava and title scroll"
-                color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.55)
-                font.family: Style.font.menuFamily
-                font.pixelSize: Style.font.caption
-            }
         }
     }
 }
