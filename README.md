@@ -22,7 +22,8 @@ The plugin follows Omarchy's active MPRIS player, so it can work with Chrome or
 YouTube, MPV, VLC, Cliamp, and other compatible players. It displays the
 available title, artist, album art, and player identity. If a browser does not
 publish an exact site name through MPRIS, its browser/player identity is used
-as the fallback.
+as the fallback. When multiple sources are available, the source that most
+recently started or resumed playback is prioritized.
 
 Cava mode reads the default audio sink monitor. If Cava is unavailable or
 cannot start, the widget falls back to title-scroll mode.

@@ -31,6 +31,14 @@
         "description": "Choose the initial Cava visualizer or title-scroll display. Right-click cycles modes while running.",
         "defaultValue": "cava",
         "options": ["cava", "title"]
+      },
+      {
+        "key": "sourceSelection",
+        "type": "string",
+        "label": "Audio source priority",
+        "description": "Use the most recently started or resumed MPRIS source when several players are available.",
+        "defaultValue": "latest",
+        "options": ["latest"]
       }
     ]
   }

@@ -32,7 +32,10 @@ PanelWindow {
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: root.opened ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    MprisSelect { id: selector }
+    MprisSelect {
+        id: selector
+        selectionMode: "latest"
+    }
     readonly property var player: selector.player
     readonly property bool active: selector.active
     readonly property bool playing: selector.playing

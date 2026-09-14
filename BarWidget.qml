@@ -21,15 +21,18 @@ BarWidget {
     property string mediaText: ""
     property string sourceText: ""
     readonly property string effectiveMode: mode === "cava" && cavaAvailable ? "cava" : "title"
-    readonly property color ink: Color.bar.text
-    readonly property color seal: Color.bar.active
-    readonly property color pill: Color.bar.background
+    readonly property color ink: Color.foreground
+    readonly property color seal: Color.accent
+    readonly property color pill: Qt.rgba(ink.r, ink.g, ink.b, 0.08)
     readonly property color pillBorder: Qt.rgba(ink.r, ink.g, ink.b, 0.18)
     readonly property int pillBorderW: 1
     readonly property int pillRadius: 8
     readonly property string mono: "monospace"
 
-    MprisSelect { id: selector }
+    MprisSelect {
+        id: selector
+        selectionMode: String(setting("sourceSelection", "latest"))
+    }
     readonly property var player: selector.player
     readonly property bool active: selector.active
     readonly property bool playing: selector.playing
@@ -47,16 +50,7 @@ BarWidget {
     }
 
     function currentPlayer() {
-        var values = Mpris.players.values
-        var paused = null
-        for (var i = 0; i < values.length; i++) {
-            var candidate = values[i]
-            if (!isReal(candidate)) continue
-            if (candidate.playbackState === MprisPlaybackState.Playing) return candidate
-            if (candidate.playbackState === MprisPlaybackState.Paused && paused === null)
-                paused = candidate
-        }
-        return paused
+        return selector.player
     }
 
     function sourceName(playerObject) {
@@ -157,7 +151,7 @@ BarWidget {
 
         Item {
             id: displayArea
-            width: root.effectiveMode === "cava" ? 82 : (root.effectiveMode === "title" ? 130 : 18)
+            width: root.effectiveMode === "cava" ? 72 : (root.effectiveMode === "title" ? 130 : 18)
             height: Style.bar.sizeHorizontal
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -177,7 +171,7 @@ BarWidget {
                 Repeater {
                     model: root.bands
                     Rectangle {
-                        width: 3
+                        width: 2
                         height: Math.max(2, (root.levels[index] || 0.08) * 18)
                         anchors.bottom: parent.bottom
                         radius: 1.5
