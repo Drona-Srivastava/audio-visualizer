@@ -53,7 +53,7 @@ QtObject {
         selector.revision += 1
     }
 
-    Timer {
+    property Timer orderTimer: Timer {
         interval: 400
         repeat: true
         running: true
