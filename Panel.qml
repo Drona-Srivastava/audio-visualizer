@@ -24,7 +24,10 @@ PanelWindow {
     screen: Quickshell.screens.length > 0 ? Quickshell.screens[0] : null
     color: "transparent"
     visible: root.opened
-    anchors { top: true; bottom: true; left: true; right: true }
+    // Keep the overlay shallow so the card sits immediately below the top bar
+    // instead of appearing at the bottom of the screen.
+    anchors { top: true; left: true; right: true }
+    height: 330
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: root.opened ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
@@ -54,11 +57,11 @@ PanelWindow {
 
     Rectangle {
         id: card
-        width: 360
+        width: 350
         height: content.implicitHeight + 34
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 48
+        anchors.top: parent.top
+        anchors.topMargin: 42
         radius: 14
         color: root.bg
         border.color: root.pillBorder
@@ -93,7 +96,7 @@ PanelWindow {
                     Text {
                         anchors.centerIn: parent
                         visible: !root.player || !parent.children[0].visible
-                        text: ""
+                        text: "♫"
                         font.pixelSize: 30
                         font.family: "sans-serif"
                         color: root.seal
@@ -142,19 +145,19 @@ PanelWindow {
                 Rectangle {
                     width: 42; height: 32; radius: 8
                     color: root.pill
-                    Text { anchors.centerIn: parent; text: ""; color: root.ink; font.pixelSize: 18 }
+                    Text { anchors.centerIn: parent; text: "‹"; color: root.ink; font.pixelSize: 22 }
                     MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canGoPrevious) root.player.previous() }
                 }
                 Rectangle {
                     width: 60; height: 32; radius: 8
                     color: root.seal
-                    Text { anchors.centerIn: parent; text: root.playing ? "" : ""; color: root.bg; font.pixelSize: 20 }
+                    Text { anchors.centerIn: parent; text: root.playing ? "Ⅱ" : "▶"; color: root.bg; font.pixelSize: 16 }
                     MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying() }
                 }
                 Rectangle {
                     width: 42; height: 32; radius: 8
                     color: root.pill
-                    Text { anchors.centerIn: parent; text: ""; color: root.ink; font.pixelSize: 18 }
+                    Text { anchors.centerIn: parent; text: "›"; color: root.ink; font.pixelSize: 22 }
                     MouseArea { anchors.fill: parent; onClicked: if (root.player && root.player.canGoNext) root.player.next() }
                 }
             }

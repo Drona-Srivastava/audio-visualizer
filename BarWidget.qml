@@ -232,7 +232,7 @@ BarWidget {
         Text {
             id: idleIcon
             visible: !root.active
-            text: ""
+            text: "♫"
             font.pixelSize: 15
             font.family: "sans-serif"
             color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.5)
