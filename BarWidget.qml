@@ -21,6 +21,13 @@ BarWidget {
     property string mediaText: ""
     property string sourceText: ""
     readonly property string effectiveMode: mode === "cava" && cavaAvailable ? "cava" : "title"
+    readonly property color ink: Color.bar.text
+    readonly property color seal: Color.bar.active
+    readonly property color pill: Color.bar.background
+    readonly property color pillBorder: Qt.rgba(ink.r, ink.g, ink.b, 0.18)
+    readonly property int pillBorderW: 1
+    readonly property int pillRadius: 8
+    readonly property string mono: "monospace"
 
     MprisSelect { id: selector }
     readonly property var player: selector.player
