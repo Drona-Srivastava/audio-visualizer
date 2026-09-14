@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "audio-visualizer",
+  "name": "Audio Visualizer",
+  "version": "1.0.0",
+  "author": "Drona Srivastava",
+  "license": "MIT",
+  "homepage": "https://github.com/Drona-Srivastava/audio-visualizer",
+  "repository": "https://github.com/Drona-Srivastava/audio-visualizer",
+  "description": "MPRIS audio visualizer, scrolling media title, album art, and playback controls",
+  "keywords": ["audio", "visualizer", "cava", "mpris", "media", "album-art"],
+  "kinds": ["panel", "bar-widget"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "panel": "Panel.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Audio Visualizer",
+    "description": "Show a Cava visualizer or scrolling media title with album art and playback controls.",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaults": {
+      "mode": "cava"
+    },
+    "schema": [
+      {
+        "key": "mode",
+        "type": "string",
+        "label": "Initial display mode",
+        "description": "Choose the initial Cava visualizer or title-scroll display. Right-click cycles modes while running.",
+        "defaultValue": "cava",
+        "options": ["cava", "title"]
+      }
+    ]
+  }
+}
