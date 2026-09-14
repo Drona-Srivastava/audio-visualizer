@@ -53,6 +53,34 @@ PanelWindow {
             .replace(/^org\.mpris\.MediaPlayer2\./, "")
     }
 
+    property string pendingTransport: ""
+
+    function sendTransport(command) {
+        root.pendingTransport = command
+        octaveControl.command = ["python3", "-c",
+            "import os,socket,sys; " +
+            "p=os.path.join(os.environ.get('XDG_RUNTIME_DIR','/tmp'),'octave-control.sock'); " +
+            "s=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM); s.settimeout(0.35); " +
+            "s.connect(p); s.sendall((sys.argv[1]+'\\n').encode()); s.recv(16); s.close()",
+            command]
+        octaveControl.running = true
+    }
+
+    function fallbackTransport(command) {
+        if (!root.player) return
+        if (command === "next") root.player.next()
+        else if (command === "previous") root.player.previous()
+        else if (command === "pause") root.player.togglePlaying()
+    }
+
+    Process {
+        id: octaveControl
+        running: false
+        onExited: function(code) {
+            if (code !== 0) root.fallbackTransport(root.pendingTransport)
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
         onClicked: root.close()
@@ -149,19 +177,19 @@ PanelWindow {
                     width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
                     color: root.pill
                     Text { anchors.centerIn: parent; text: "‹"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.previous() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: root.sendTransport("previous") }
                 }
                 Rectangle {
                     width: 64; height: 34; radius: Math.max(8, Style.cornerRadius)
                     color: root.seal
                     Text { anchors.centerIn: parent; text: root.playing ? "Ⅱ" : "▶"; color: root.bg; font.family: Style.font.family; font.pixelSize: Style.font.icon }
-                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.togglePlaying() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: root.sendTransport("pause") }
                 }
                 Rectangle {
                     width: 44; height: 34; radius: Math.max(8, Style.cornerRadius)
                     color: root.pill
                     Text { anchors.centerIn: parent; text: "›"; color: root.ink; font.pixelSize: 22 }
-                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: if (root.player) root.player.next() }
+                    MouseArea { anchors.fill: parent; enabled: root.player !== null; onClicked: root.sendTransport("next") }
                 }
             }
 
