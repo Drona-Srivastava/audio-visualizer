@@ -27,7 +27,7 @@ PanelWindow {
     // Keep the overlay shallow so the card sits immediately below the top bar
     // instead of appearing at the bottom of the screen.
     anchors { top: true; left: true; right: true }
-    height: 330
+    implicitHeight: 330
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: root.opened ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
