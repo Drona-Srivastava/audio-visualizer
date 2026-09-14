@@ -90,11 +90,12 @@ PanelWindow {
                         asynchronous: true
                         visible: status === Image.Ready
                     }
-                    IconText {
+                    Text {
                         anchors.centerIn: parent
                         visible: !root.player || !parent.children[0].visible
                         text: ""
                         font.pixelSize: 30
+                        font.family: "sans-serif"
                         color: root.seal
                     }
                 }

@@ -149,7 +149,6 @@ BarWidget {
         color: root.pill
         border.color: root.pillBorder
         border.width: root.pillBorderW
-        PillShadow { theme: root }
     }
 
     Row {
@@ -223,11 +222,12 @@ BarWidget {
             }
         }
 
-        IconText {
+        Text {
             id: idleIcon
             visible: !root.active
             text: ""
             font.pixelSize: 15
+            font.family: "sans-serif"
             color: Qt.rgba(root.ink.r, root.ink.g, root.ink.b, 0.5)
         }
     }
