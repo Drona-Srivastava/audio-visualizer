@@ -20,6 +20,7 @@ BarWidget {
     property string marqueeText: ""
     property string mediaText: ""
     property string sourceText: ""
+    property int widgetWidth: 144
     readonly property string effectiveMode: mode === "cava" && cavaAvailable ? "cava" : "title"
     readonly property color ink: Color.foreground
     readonly property color seal: Color.accent
@@ -88,7 +89,9 @@ BarWidget {
         if (root.bar) root.bar.run("omarchy-shell shell toggle audio-visualizer")
     }
 
-    implicitWidth: Math.max(38, contentRow.implicitWidth + Style.space(8))
+    // Reserve one stable slot so mode changes and the play button never push
+    // into the neighboring bar widget.
+    implicitWidth: root.widgetWidth
     implicitHeight: Style.bar.sizeHorizontal
 
     Component.onCompleted: root.resetLevels()
@@ -151,7 +154,7 @@ BarWidget {
 
         Item {
             id: displayArea
-            width: root.effectiveMode === "cava" ? 72 : (root.effectiveMode === "title" ? 130 : 18)
+            width: root.widgetWidth - Style.bar.iconSlot - Style.space(6)
             height: Style.bar.sizeHorizontal
             anchors.verticalCenter: parent.verticalCenter
             clip: true
@@ -194,7 +197,7 @@ BarWidget {
                 font.family: root.mono
                 font.pixelSize: 11
                 anchors.verticalCenter: parent.verticalCenter
-                x: titleClip.width >= implicitWidth ? 0 : -scrollDistance
+                x: titleClip.width >= implicitWidth ? (titleClip.width - implicitWidth) / 2 : -scrollDistance
                 width: implicitWidth
 
                 property real scrollDistance: Math.max(0, implicitWidth - titleClip.width)
@@ -203,8 +206,8 @@ BarWidget {
                     loops: Animation.Infinite
                     PauseAnimation { duration: 1100 }
                     NumberAnimation { to: -titleText.scrollDistance; duration: Math.max(1800, titleText.scrollDistance * 35); easing.type: Easing.Linear }
-                    PauseAnimation { duration: 900 }
-                    NumberAnimation { to: 0; duration: 800; easing.type: Easing.Linear }
+                    PauseAnimation { duration: 500 }
+                    PropertyAction { property: "x"; value: titleClip.width }
                 }
             }
         }
@@ -229,7 +232,6 @@ BarWidget {
             }
         }
         }
-    }
 
     Rectangle {
         id: playButton
@@ -261,5 +263,7 @@ BarWidget {
             cursorShape: Qt.PointingHandCursor
             onClicked: if (root.player && root.player.canTogglePlaying) root.player.togglePlaying()
         }
+    }
+
     }
 }
